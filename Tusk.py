@@ -9,33 +9,38 @@ directories = {
         '3': []
       }
 def get_name():
-    number = input('Введите номер документа ')
+    number = input('Введите номер документа:  ')
     for data in documents:
         if data.get("number") == number:
             return data.get('name')
     return 'Документа с таким номером нет'
  
-def get_shelf():
-    number = input('Введите номер документа ')
-    for key in directories :
-        if number in directories.get(key):
-            return key
-    return 'В полках документа с данным номером нет.'
+def shelf_number(arg_number):
+    shelf_break = False
+    for shelf_directory in directories.items():
+        for doc_number in shelf_directory[1]:
+            if doc_number == arg_number:
+                print('Данный документ находится на полке - ', shelf_directory[0])
+                shelf_break = True
+                break
+        if shelf_break == True:
+            break
+    else:
+        print('  Внимание! Документа нет на полке.')
  
-def get_list(docs):
-    for doc in docs:
-        return f"{doc['type']} {doc['number']} {doc['name']};"
+def get_list():
+    for document in documents:
+        print('{} "{}" "{}"'.format(document['type'], document['number'], document['name']))
  
  
-def add_doc():
-    shelf = input('Введите номер полки куда положить документ. ')
-    if shelf not in directories:
-        return 'Нет такой полки'
-    doc = {}
-    for info in ('type','number', 'name'):
-        doc[info] = input(f'{info}: ')
-    directories[shelf] = directories.get(shelf).append(doc['number'])
-    return 'Документ добавлен'
+def add_new_document(agr_type, arg_number, arg_name, arg_dir_number):
+    if int(arg_dir_number) == 1 or int(arg_dir_number) == 2 or int(arg_dir_number) == 3:
+        documents.append({"type": agr_type, "number": arg_number, "name": arg_name})
+        directories[arg_dir_number].append(arg_number)
+        print('\n  Ваш документ добавлен в Архив!')
+    else:
+        print('\n  Внимание! Такой полки не существует.')
+    
  
  
 documents = [
@@ -58,10 +63,16 @@ while True:
         print(get_name())
     
     elif comand == 's':
-        print(get_shelf())
+            shelf_number(input('\nВведите номер документа:'))
     
     elif comand == 'l':
         print(get_list())
     
     elif comand == 'a':
-            print(add_doc())
+       add_new_document(input('\nВведите тип документа (passport,invoice,insurance...):'),
+                         input('Введите номер документа: '), input('Введите имя: '),
+                         input('Введите номер полки (1, 2, 3): '))
+       print (documents)
+    else:
+             print('Вы ввели команду не корректно, повторите ввод.')
+
